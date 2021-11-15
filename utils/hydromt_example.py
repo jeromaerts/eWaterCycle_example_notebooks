@@ -35,6 +35,10 @@ hydromt_config = f"{PARAMDIR}/config_hydromt_wflow_sbm.ini"
 resolution = 0.00833333
 resolution_name = "1km"
 
+# Set min, max strahler order.
+min_strahler_order = 4
+max_strahler_order = 9
+
 # Check if resolution information exists.
 RESDIR = Path(f"{PARAMDIR}/{resolution_name}/")
 
@@ -63,124 +67,118 @@ for shapefile in shapefiles:
     bottom_bound = str(np.round(1e6 * (bbox[1] - 0.25)) / 1e6)
     right_bound = str(np.round(1e6 * (bbox[2] + 0.25)) / 1e6)
     top_bound = str(np.round(1e6 * (bbox[3] + 0.25)) / 1e6)
-
-    # Set minimum strahler order.
-    min_strahler_order = 6
-    min_ratio = 10
-    area_ratio = min_ratio + 1
+    
+    # Obtain epsg number of coordinate system in UTM, for given latitude.
+    # Check if northern or southern hemisphere
+    if station_lat > 0:
+        epsg_c = "EPSG:" + str(32601 + int(np.floor((station_lon - -180.0) / 6)))
+    else:
+        epsg_c = "EPSG:" + str(32701 + int(np.floor((station_lon - -180.0) / 6)))
 
     # Create lists for output dataframe
     df_info = pd.DataFrame()
     basin_names = []
     strahler_orders = []
-    shape_areas = []
+    camels_areas = []
     wflow_areas = []
     area_ratios = []
 
-    # Run over a number of stream order values to ensure that optimal catchment area is obtained
+    # Run over a number of stream order values to ensure that optimal basin area is obtained
     # Optimal area is defined wrt area as defined within camels dataset
-    while area_ratio > min_ratio:
-        print("yes")
-        for strahler_order in range(min_strahler_order, 9):
-            print(f"strahler_order: {strahler_order}")
+    for strahler_order in range(min_strahler_order, max_strahler_order):
+        print(f"strahler_order: {strahler_order}")
 
-            if os.path.exists(OUTDIR):
-                shutil.rmtree(OUTDIR)
+        if os.path.exists(OUTDIR):
+            shutil.rmtree(OUTDIR)
 
-            runbasin = (
-                "hydromt build wflow -vv "
-                + str(OUTDIR)
-                + " -r "
-                + str(resolution)
-                + " \"{'subbasin': ["
-                + str(station_lon)
-                + ", "
-                + str(station_lat)
-                + "], 'strord': "
-                + str(strahler_order)
-                + ", 'bbox': ["
-                + left_bound
-                + ", "
-                + bottom_bound
-                + ", "
-                + right_bound
-                + ", "
-                + top_bound
-                + ']}" -i '
-                + str(hydromt_config)
-                + " -d "
-                + datasource
-            )
+        runbasin = (
+            "hydromt build wflow -vv "
+            + str(OUTDIR)
+            + " -r "
+            + str(resolution)
+            + " \"{'subbasin': ["
+            + str(station_lon)
+            + ", "
+            + str(station_lat)
+            + "], 'strord': "
+            + str(strahler_order)
+            + ", 'bbox': ["
+            + left_bound
+            + ", "
+            + bottom_bound
+            + ", "
+            + right_bound
+            + ", "
+            + top_bound
+            + ']}" -i '
+            + str(hydromt_config)
+            + " -d "
+            + datasource
+        )
 
-            print(runbasin)
-            os.system(runbasin)
+        print(runbasin)
+        os.system(runbasin)
 
-            catchment_json_file = f"{OUTDIR}/staticgeoms/basins.geojson"
+        # Obtain CAMELS basin area (km2)
+        camels_area = row.area_gages2
 
-            # Read catchment geojson file as geopandas object.
-            gdf_json = gpd.read_file(catchment_json_file)
+        # Read basin geojson file as geopandas object
+        basin_json_file = f"{OUTDIR}/staticgeoms/basins.geojson"
+        gdf_json = gpd.read_file(basin_json_file)
 
-            # Obtain catchment area (km2)
-            shape_area = (
-                gdf_shape["geometry"]
-                .to_crs({"init": "epsg:3395"})
-                .map(lambda p: p.area / 10 ** 6)
-                .values
-            )
-            wflow_area = (
-                gdf_json["geometry"]
-                .to_crs({"init": "epsg:3395"})
-                .map(lambda p: p.area / 10 ** 6)
-                .values
-            )
-            area_ratio = shape_area / wflow_area
+        # Convert coordinates to metric system using epsg code and obtain catchment area (km2)
+        wflow_area = (gdf_json.to_crs(epsg_c).area * 1e-6)[0]
+        area_ratio = np.abs(np.log(camels_area / wflow_area))
 
-            print(f"shape_area: {shape_area}")
-            print(f"wflow_area: {wflow_area}")
-            print(f"area ratio: {area_ratio}")
+        print(f"camels_area: {camels_area}")
+        print(f"wflow_area: {wflow_area}")
+        print(f"area ratio: {area_ratio}")
 
-            basin_names.append(basin_name)
-            strahler_orders.append(strahler_order)
-            shape_areas.append(shape_area)
-            wflow_areas.append(wflow_area)
-            area_ratios.append(area_ratio)
+        basin_names.append(basin_name)
+        strahler_orders.append(strahler_order)
+        camels_areas.append(camels_area)
+        wflow_areas.append(wflow_area)
+        area_ratios.append(area_ratio)
 
+    # Construct output dataframe
     df_info["basin_name"] = basin_names
     df_info["strahler_order"] = strahler_orders
-    df_info["shape_area"] = shape_areas
+    df_info["shape_area"] = camels_areas
     df_info["wflow_area"] = wflow_areas
     df_info["area_ratio"] = area_ratios
 
     # Select best strahler order value based on area ratio
-    df_info = df_info.set_index("area_ratio")
-    df_info = df_info.sort_index()
-    strahler_order = df_info.strahler_order[0]
+    df_info = df_info.sort_values(
+        ["strahler_order", "area_ratio"], ascending=(False, True)
+    )
+    strahler_order = df_info.loc[0].strahler_order
+    print(f"Selected Strahler Order: {strahler_order}")
 
-# Final run HydroMT with best strahler order
-runbasin = (
-    "hydromt build wflow -vv "
-    + str(OUTDIR)
-    + " -r "
-    + str(resolution)
-    + " \"{'subbasin': ["
-    + str(station_lon)
-    + ", "
-    + str(station_lat)
-    + "], 'strord': "
-    + str(strahler_order)
-    + ", 'bbox': ["
-    + left_bound
-    + ", "
-    + bottom_bound
-    + ", "
-    + right_bound
-    + ", "
-    + top_bound
-    + ']}" -i '
-    + str(hydromt_config)
-    + " -d "
-    + datasource
-)
+    # Final run HydroMT with best strahler order
+    runbasin = (
+        "hydromt build wflow -vv "
+        + str(OUTDIR)
+        + " -r "
+        + str(resolution)
+        + " \"{'subbasin': ["
+        + str(station_lon)
+        + ", "
+        + str(station_lat)
+        + "], 'strord': "
+        + str(strahler_order)
+        + ", 'bbox': ["
+        + left_bound
+        + ", "
+        + bottom_bound
+        + ", "
+        + right_bound
+        + ", "
+        + top_bound
+        + ']}" -i '
+        + str(hydromt_config)
+        + " -d "
+        + datasource
+    )
 
-print(runbasin)
-os.system(runbasin)
+    print(runbasin)
+    os.system(runbasin)
