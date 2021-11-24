@@ -2,9 +2,45 @@ container_engine: singularity
 grdc_location: /gpfs/work1/projects/0/wtrcycle/GRDC
 output_dir: /gpfs/home6/jaerts/eWaterCycle_example_data/ewatercycle_output
 parameter_sets:
+  0_camels_01013500_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/0_camels_01013500_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/0_camels_01013500_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  100_camels_02038850_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/100_camels_02038850_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/100_camels_02038850_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
   13_camels_01123000_3km:
     config: /gpfs/home6/jaerts/example_notebook_ewatercycle/parameter_sets/wflow_camels/3km/13_camels_01123000_3km/wflow_sbm_calibration.ini
     directory: /gpfs/home6/jaerts/example_notebook_ewatercycle/parameter_sets/wflow_camels/3km/13_camels_01123000_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  150_camels_02297155_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/150_camels_02297155_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/150_camels_02297155_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  200_camels_03049800_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/200_camels_03049800_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/200_camels_03049800_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  250_camels_03500240_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/250_camels_03500240_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/250_camels_03500240_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  300_camels_05408000_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/300_camels_05408000_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/300_camels_05408000_3km
     doi: N/A
     supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
     target_model: wflow
@@ -33,8 +69,50 @@ parameter_sets:
     supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
     target_model: wflow
   329_camels_06043500_3km:
-    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/13_camels_01123000_3km/wflow_sbm_calibration.ini
-    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/13_camels_01123000_3km
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/600_camels_12117000_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/600_camels_12117000_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  350_camels_06406000_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/350_camels_06406000_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/350_camels_06406000_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  400_camels_07057500_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/400_camels_07057500_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/400_camels_07057500_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  450_camels_08079600_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/450_camels_08079600_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/450_camels_08079600_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  500_camels_09352900_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/500_camels_09352900_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/500_camels_09352900_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  51_camels_01532000_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/51_camels_01532000_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/51_camels_01532000_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  550_camels_11148900_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/550_camels_11148900_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/550_camels_11148900_3km
+    doi: N/A
+    supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
+    target_model: wflow
+  600_camels_12117000_3km:
+    config: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/600_camels_12117000_3km/wflow_sbm_evaluation.ini
+    directory: /gpfs/home6/jaerts/eWaterCycle_example_data/wflow_camels_parameters/3km/600_camels_12117000_3km
     doi: N/A
     supported_model_versions: !!set {2020.1.1: null, 2020.1.2: null}
     target_model: wflow
