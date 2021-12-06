@@ -15,9 +15,54 @@ import hydromt
 import glob
 import shutil
 
-# Specify parameter directory and resolution
-model_dir = '/gpfs/home6/jaerts/hydromt_camels_brazil/folder/'
-resolution = '1km'
+# Mapping for PCRaster Types
+pcraster_dtypes = {'Kext': 'scalar',
+                    'KsatVer': 'scalar',
+                    'KsatVer_0': 'scalar',
+                    'KsatVer_100': 'scalar',
+                    'KsatVer_15': 'scalar',
+                    'KsatVer_200': 'scalar',
+                    'KsatVer_30': 'scalar',
+                    'KsatVer_5': 'scalar',
+                    'KsatVer_60': 'scalar',
+                    'M': 'scalar',
+                    'M_original': 'scalar',
+                    'M_original_': 'scalar',
+                    'N': 'scalar',
+                    'PathFrac': 'scalar',
+                    'RiverSlope': 'scalar',
+                    'RootingDepth': 'scalar',
+                    'Sl': 'scalar',
+                    'Slope': 'scalar',
+                    'SoilMinThickness': 'scalar',
+                    'SoilThickness': 'scalar',
+                    'Swood': 'scalar',
+                    'WaterFrac': 'scalar',
+                    'c_0': 'scalar',
+                    'c_1': 'scalar',
+                    'c_2': 'scalar',
+                    'c_3': 'scalar',
+                    'old_M': 'scalar',
+                    'rivwth_obs': 'scalar',
+                    'subare': 'scalar',
+                    'thetaR': 'scalar',
+                    'thetaS': 'scalar',
+                    'wflow_dem': 'scalar',
+                    'wflow_gauges': 'nominal',
+                    'wflow_landuse': 'nominal',
+                    'wflow_ldd': 'ldd',
+                    'wflow_river': 'bool',
+                    'wflow_riverlength': 'scalar',
+                    'wflow_riverwidth': 'scalar',
+                    'wflow_soil': 'nominal',
+                    'wflow_streamorder': 'ordinal',
+                    'wflow_subcatch': 'nominal',
+                    'wflow_uparea': 'scalar',
+                    'x_out': 'scalar',
+                    'y_out': 'scalar'}
+
+# Specify parameter directory
+model_dir = '/gpfs/home6/jaerts/folder/'
 
 model_instances = glob.glob(f'{model_dir}/*')
 
@@ -28,7 +73,7 @@ for instance in model_instances:
     mod = hydromt.WflowModel(root, mode='r')
     ds = mod.staticmaps
     outdir = join(root, 'staticmaps')
-    ds.raster.to_mapstack(outdir, driver='PCRaster')
+    ds.raster.to_mapstack(outdir, driver='PCRaster', pcr_vs_map=pcraster_dtypes)
 
 # Loop model instances and save tables
 for instance in model_instances:
